@@ -13,7 +13,19 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(['create']), // Allow anyone to submit
-      allow.authenticated().to(['read', 'update', 'delete']), // Authenticated users can manage
+      allow.authenticated('userPools').to(['read', 'update', 'delete']), // Authenticated users can manage
+    ]),
+  TicketBooking: a
+    .model({
+      movie: a.string().required(),
+      userEmail: a.email().required(),
+      seats: a.string().required(),
+      price: a.float().required(),
+      bookingTime: a.datetime().required(),
+    })
+    .authorization((allow) => [
+      allow.owner('userEmail').to(['create', 'read', 'update', 'delete']),
+      allow.groups(['admin']).to(['read', 'update', 'delete']),
     ]),
 });
 
@@ -28,4 +40,3 @@ export const data = defineData({
     },
   },
 });
-
